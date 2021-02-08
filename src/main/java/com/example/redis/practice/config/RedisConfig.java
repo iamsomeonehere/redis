@@ -35,7 +35,7 @@ public class RedisConfig {
   @ConditionalOnMissingBean(name = "redisTemplate")
   @Primary
   public <K, V> RedisTemplate<K, V> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
-    RedisTemplate<K, V> template =  new RedisTemplate<>();
+    RedisTemplate<K, V> template = new RedisTemplate<>();
     template.setConnectionFactory(redisConnectionFactory);
     template.setKeySerializer(new StringRedisSerializer());
     template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
