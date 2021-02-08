@@ -10,4 +10,6 @@ public interface RedisService {
   void addData(String value);
 
   OrdersDto annotations(OrdersDto ordersDto);
+
+  OrdersDto redisObject(String key);
 }

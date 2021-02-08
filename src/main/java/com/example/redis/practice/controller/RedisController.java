@@ -21,7 +21,7 @@ public class RedisController {
   private RedisService redisService;
 
   @PostMapping("/putStringData")
-  public String putData(@RequestParam(required = false) String value) {
+  public String putData(@RequestParam String value) {
     redisService.addData(value);
     return "Done";
   }
@@ -29,5 +29,10 @@ public class RedisController {
   @PostMapping("/annotations")
   public OrdersDto annotations() {
     return redisService.annotations(RedisUtils.getOrders());
+  }
+
+  @PostMapping("/redisObject")
+  public OrdersDto redisObject(@RequestParam String key) {
+    return redisService.redisObject(key);
   }
 }

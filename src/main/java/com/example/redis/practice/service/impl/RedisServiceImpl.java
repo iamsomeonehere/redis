@@ -35,4 +35,11 @@ public class RedisServiceImpl implements RedisService {
     System.out.println("Getting data from database");
     return RedisUtils.getOrders();
   }
+
+  @Override
+  public OrdersDto redisObject(String key) {
+    System.out.println(key);
+    ordersDtoRedisTemplate.opsForValue().set(key, RedisUtils.getOrders());
+    return ordersDtoRedisTemplate.opsForValue().get(key);
+  }
 }
