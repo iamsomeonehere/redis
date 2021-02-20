@@ -9,7 +9,11 @@ public interface RedisService {
 
   void addData(String value);
 
+  OrdersDto redisObject(String key);
+
   OrdersDto annotations(OrdersDto ordersDto);
 
-  OrdersDto redisObject(String key);
+  String experiment(String v1, String v2);
+
+  String experimen(String tomato);
 }

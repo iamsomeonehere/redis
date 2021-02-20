@@ -1,6 +1,7 @@
 package com.example.redis.practice.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,13 @@ public class RedisServiceImpl implements RedisService {
   }
 
   @Override
+  public OrdersDto redisObject(String key) {
+    System.out.println(key);
+    ordersDtoRedisTemplate.opsForValue().set(key, RedisUtils.getOrders());
+    return ordersDtoRedisTemplate.opsForValue().get(key);
+  }
+
+  @Override
   @Cacheable(value = "orderdto", key = "#ordersDto.country", unless = "#result == null")
   public OrdersDto annotations(OrdersDto ordersDto) {
     System.out.println("Getting data from database");
@@ -37,9 +45,16 @@ public class RedisServiceImpl implements RedisService {
   }
 
   @Override
-  public OrdersDto redisObject(String key) {
-    System.out.println(key);
-    ordersDtoRedisTemplate.opsForValue().set(key, RedisUtils.getOrders());
-    return ordersDtoRedisTemplate.opsForValue().get(key);
+  @Cacheable(cacheNames = "addresses", keyGenerator = "customKeyGenerator", cacheManager = "cacheManager1")
+  public String experiment(String v1, String v2) {
+    System.out.println("Hitting database");
+    return "RedisUtils.getOrders()";
+  }
+
+  @Override
+  @CachePut(value = "addresses", key = "#v1")
+  public String experimen(String v1) {
+    System.out.println("Hitting database");
+    return "changed";
   }
 }

@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -22,11 +23,32 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 public class RedisConfig {
 
   @Bean
+  @Primary
   public CacheManager cacheManager(LettuceConnectionFactory redisConnectionFactory) {
-    RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig().serializeValuesWith(
-        RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
-        .entryTtl(Duration.ofHours(30000));
-    return RedisCacheManager.builder(redisConnectionFactory).cacheDefaults(cacheConfiguration).build();
+    RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration
+        .defaultCacheConfig()
+        .serializeValuesWith(RedisSerializationContext
+            .SerializationPair
+            .fromSerializer(new GenericJackson2JsonRedisSerializer()))
+        .entryTtl(Duration.ofHours(2));
+    return RedisCacheManager
+        .builder(redisConnectionFactory)
+        .cacheDefaults(cacheConfiguration)
+        .build();
+  }
+
+  @Bean("cacheManager1")
+  public CacheManager cacheManager1(LettuceConnectionFactory redisConnectionFactory) {
+    RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration
+        .defaultCacheConfig()
+        .serializeValuesWith(RedisSerializationContext
+            .SerializationPair
+            .fromSerializer(new GenericJackson2JsonRedisSerializer()))
+        .entryTtl(Duration.ofSeconds(10));
+    return RedisCacheManager
+        .builder(redisConnectionFactory)
+        .cacheDefaults(cacheConfiguration)
+        .build();
   }
 
   @Bean
@@ -38,5 +60,10 @@ public class RedisConfig {
     template.setKeySerializer(new StringRedisSerializer());
     template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
     return template;
+  }
+
+  @Bean(value = "customKeyGenerator")
+  public KeyGenerator keyGenerator() {
+    return new CustomKeyGenerator();
   }
 }
